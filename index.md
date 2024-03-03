@@ -6,6 +6,7 @@ This is my [github page](https://github.com/Harshu743) where you can see all my 
 1. [Temps](https://github.com/Harshu743/Temps)
 2. [Most Basic Browser](https://github.com/Harshu743/MostBasicBrowser)
 3. [Cleaner](https://github.com/Harshu743/Cleaner)
+4. [Basic html dump](https://github.com/Harshu743/html-basic) [(preview)](https://harshu743.github.io/html/)
 
 Currently these are the only projects, I'm Working on more projects like [Temps](https://github.com/Harshu743/Temps), [Most Basic Browser](https://github.com/Harshu743/MostBasicBrowser) and [Cleaner](https://github.com/Harshu743/Cleaner).
 Please share and star these projects on github if possible.
