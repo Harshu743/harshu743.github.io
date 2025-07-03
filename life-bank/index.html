@@ -403,6 +403,29 @@
       }
     }
     
+    /* Sound control */
+    .sound-control {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(15, 23, 42, 0.7);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+      border: 1px solid rgba(45, 212, 191, 0.3);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+    
+    .sound-control i {
+      font-size: 1.2em;
+      color: #4ade80;
+    }
+    
     @media (max-width: 480px) {
       h1 {
         font-size: 2.2rem;
@@ -416,12 +439,24 @@
         padding: 0.8em;
         font-size: 1.1em;
       }
+      
+      .sound-control {
+        top: 10px;
+        right: 10px;
+        width: 35px;
+        height: 35px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="aurora">
     <div class="aurora-bg"></div>
+  </div>
+  
+  <!-- Sound control -->
+  <div class="sound-control" id="soundControl">
+    <i class="fas fa-volume-up"></i>
   </div>
   
   <div class="title-container">
@@ -432,27 +467,27 @@
   <div class="machine">
     <div class="display" id="display">0</div>
     <div class="keypad">
-      <button onclick="num(1)"><i class="fas fa-1"></i></button>
-      <button onclick="num(2)"><i class="fas fa-2"></i></button>
-      <button onclick="num(3)"><i class="fas fa-3"></i></button>
-      <button onclick="num(4)"><i class="fas fa-4"></i></button>
-      <button onclick="num(5)"><i class="fas fa-5"></i></button>
-      <button onclick="num(6)"><i class="fas fa-6"></i></button>
-      <button onclick="num(7)"><i class="fas fa-7"></i></button>
-      <button onclick="num(8)"><i class="fas fa-8"></i></button>
-      <button onclick="num(9)"><i class="fas fa-9"></i></button>
-      <button onclick="k()">K</button>
-      <button onclick="num(0)"><i class="fas fa-0"></i></button>
-      <button onclick="m()">M</button>
+      <button onclick="playClickSound(); num(1)"><i class="fas fa-1"></i></button>
+      <button onclick="playClickSound(); num(2)"><i class="fas fa-2"></i></button>
+      <button onclick="playClickSound(); num(3)"><i class="fas fa-3"></i></button>
+      <button onclick="playClickSound(); num(4)"><i class="fas fa-4"></i></button>
+      <button onclick="playClickSound(); num(5)"><i class="fas fa-5"></i></button>
+      <button onclick="playClickSound(); num(6)"><i class="fas fa-6"></i></button>
+      <button onclick="playClickSound(); num(7)"><i class="fas fa-7"></i></button>
+      <button onclick="playClickSound(); num(8)"><i class="fas fa-8"></i></button>
+      <button onclick="playClickSound(); num(9)"><i class="fas fa-9"></i></button>
+      <button onclick="playClickSound(); k()">K</button>
+      <button onclick="playClickSound(); num(0)"><i class="fas fa-0"></i></button>
+      <button onclick="playClickSound(); m()">M</button>
     </div>
     
     <div class="controls">
       <button class="pay" onclick="payIn()"><i class="fas fa-arrow-down"></i> PAY IN</button>
       <button class="out" onclick="payOut()"><i class="fas fa-arrow-up"></i> PAY OUT</button>
-      <button class="action" onclick="setSalary()"><i class="fas fa-coins"></i> Set Salary</button>
+      <button class="action" onclick="playClickSound(); setSalary()"><i class="fas fa-coins"></i> Set Salary</button>
       <button class="pay" onclick="payday()"><i class="fas fa-calendar-day"></i> PAYDAY</button>
       <button class="spin" onclick="spinToWin()"><i class="fas fa-dice"></i> SPIN</button>
-      <button onclick="clearDisplay()"><i class="fas fa-eraser"></i> C</button>
+      <button onclick="playClickSound(); clearDisplay()"><i class="fas fa-eraser"></i> C</button>
     </div>
     
     <div class="player-selector">
@@ -481,9 +516,38 @@
     const display = document.getElementById("display");
     const playerSelect = document.getElementById("playerSelect");
     const playersDiv = document.getElementById("players");
+    const soundControl = document.getElementById("soundControl");
     
     let currentInput = "";
     let currentPlayerIndex = 0;
+    let soundEnabled = true;
+
+    // Sound control toggle
+    soundControl.addEventListener("click", () => {
+      soundEnabled = !soundEnabled;
+      if (soundEnabled) {
+        soundControl.innerHTML = '<i class="fas fa-volume-up"></i>';
+      } else {
+        soundControl.innerHTML = '<i class="fas fa-volume-mute"></i>';
+      }
+    });
+
+    // Play sound function
+    function playSound(soundId) {
+      if (!soundEnabled) return;
+      try {
+        const sound = document.getElementById(soundId);
+        sound.currentTime = 0;
+        sound.play().catch(e => console.log("Sound play failed:", e));
+      } catch (e) {
+        console.error("Error playing sound:", e);
+      }
+    }
+    
+    // Specific function for button click sound
+    function playClickSound() {
+      playSound("buttonClickSound");
+    }
 
     // Initialize player dropdown
     players.forEach((p, i) => {
@@ -548,6 +612,7 @@
     }
 
     function payIn() {
+      playSound("payInSound");
       let p = getPlayer();
       p.balance += getAmount();
       clearDisplay();
@@ -555,6 +620,7 @@
     }
 
     function payOut() {
+      playSound("payOutSound");
       let p = getPlayer();
       p.balance -= getAmount();
       clearDisplay();
@@ -567,8 +633,9 @@
       clearDisplay();
       updatePlayers();
     }
-
+    
     function payday() {
+      playSound("paydaySound");
       let p = getPlayer();
       if (p.balance < 0) {
         p.balance -= Math.floor(Math.abs(p.balance)*0.1);
@@ -576,8 +643,9 @@
       p.balance += p.salary;
       updatePlayers();
     }
-
+    
     function spinToWin() {
+      playSound("spinSound");
       const prizeOptions = [100000, 100000, 200000, 200000, 250000, 250000, 300000, 300000, 350000, 350000, 400000, 400000, 450000, 450000, 500000, 600000, 700000, 800000, 900000, 1000000];
       const prize = prizeOptions[Math.floor(Math.random() * prizeOptions.length)];
       const prizeFormatted = format(prize);
@@ -748,6 +816,31 @@
       }
     `;
     document.head.appendChild(style);
+  </script>
+  
+  <!-- Audio elements -->
+  <audio id="payInSound" src="sounds/deposit.mp3" preload="auto"></audio>
+  <audio id="payOutSound" src="sounds/withdraw.mp3" preload="auto"></audio>
+  <audio id="spinSound" src="sounds/spintowin.mp3" preload="auto"></audio>
+  <audio id="paydaySound" src="sounds/payday.mp3" preload="auto"></audio>
+  <audio id="buttonClickSound" src="sounds/button-click.mp3" preload="auto"></audio>
+  
+  <!-- Fallback for browsers that require user interaction -->
+  <script>
+    // Enable audio after first user interaction
+    document.addEventListener('click', function initAudio() {
+      // Create a silent audio element to unlock audio
+      const unlockAudio = new Audio();
+      unlockAudio.volume = 0;
+      unlockAudio.play().then(() => {
+        // Audio context is now unlocked
+      }).catch(e => {
+        console.log("Audio unlock failed:", e);
+      });
+      
+      // Remove the event listener after first interaction
+      document.removeEventListener('click', initAudio);
+    }, { once: true });
   </script>
 </body>
 </html>
