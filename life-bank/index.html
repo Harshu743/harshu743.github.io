@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LIFE Bank Machine - Aurora Theme</title>
+  <title>LIFE Bank</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     * {
@@ -62,7 +63,7 @@
         rgba(0, 230, 210, 0.1) 0%,
         transparent 40%
       );
-      animation: aurora-move 45s infinite linear;
+      animation: aurora-move 60s infinite linear;
     }
     
     @keyframes aurora-move {
@@ -96,6 +97,7 @@
       margin-bottom: 0.5rem;
       background: linear-gradient(to right, #4ade80, #2dd4bf, #0ea5e9);
       -webkit-background-clip: text;
+      background-clip: text;
       -webkit-text-fill-color: transparent;
       text-shadow: 0 0 15px rgba(74, 222, 128, 0.3);
       letter-spacing: 1px;
@@ -140,7 +142,7 @@
         rgba(45, 212, 191, 0.25),
         transparent 30%
       );
-      animation: rotate 18s linear infinite;
+      animation: rotate 20s linear infinite;
       z-index: -1;
     }
     
@@ -196,6 +198,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      gap: 8px;
     }
     
     button::before {
@@ -226,28 +229,16 @@
       border: 1px solid rgba(234, 179, 8, 0.4);
     }
     
-    button.action:hover {
-      background: rgba(234, 179, 8, 0.35);
-    }
-    
     button.pay {
       background: rgba(34, 197, 94, 0.25);
       color: #86efac;
       border: 1px solid rgba(34, 197, 94, 0.4);
     }
     
-    button.pay:hover {
-      background: rgba(34, 197, 94, 0.35);
-    }
-    
     button.out {
       background: rgba(239, 68, 68, 0.25);
       color: #fca5a5;
       border: 1px solid rgba(239, 68, 68, 0.4);
-    }
-    
-    button.out:hover {
-      background: rgba(239, 68, 68, 0.35);
     }
     
     button.spin {
@@ -441,17 +432,17 @@
   <div class="machine">
     <div class="display" id="display">0</div>
     <div class="keypad">
-      <button onclick="num(1)">1</button>
-      <button onclick="num(2)">2</button>
-      <button onclick="num(3)">3</button>
-      <button onclick="num(4)">4</button>
-      <button onclick="num(5)">5</button>
-      <button onclick="num(6)">6</button>
-      <button onclick="num(7)">7</button>
-      <button onclick="num(8)">8</button>
-      <button onclick="num(9)">9</button>
+      <button onclick="num(1)"><i class="fas fa-1"></i></button>
+      <button onclick="num(2)"><i class="fas fa-2"></i></button>
+      <button onclick="num(3)"><i class="fas fa-3"></i></button>
+      <button onclick="num(4)"><i class="fas fa-4"></i></button>
+      <button onclick="num(5)"><i class="fas fa-5"></i></button>
+      <button onclick="num(6)"><i class="fas fa-6"></i></button>
+      <button onclick="num(7)"><i class="fas fa-7"></i></button>
+      <button onclick="num(8)"><i class="fas fa-8"></i></button>
+      <button onclick="num(9)"><i class="fas fa-9"></i></button>
       <button onclick="k()">K</button>
-      <button onclick="num(0)">0</button>
+      <button onclick="num(0)"><i class="fas fa-0"></i></button>
       <button onclick="m()">M</button>
     </div>
     
@@ -586,20 +577,35 @@
       updatePlayers();
     }
 
-    // Updated spinToWin function as requested
     function spinToWin() {
-      const prizeOptions = [100000, 200000, 500000];
+      const prizeOptions = [100000, 100000, 200000, 200000, 250000, 250000, 300000, 300000, 350000, 350000, 400000, 400000, 450000, 450000, 500000, 600000, 700000, 800000, 900000, 1000000];
       const prize = prizeOptions[Math.floor(Math.random() * prizeOptions.length)];
-      const winnerIndex = Math.floor(Math.random() * players.length);
-      
-      players[winnerIndex].balance += prize;
-      
-      // Create a visual effect for the winner
-      const winnerName = players[winnerIndex].name;
       const prizeFormatted = format(prize);
-      
-      // Create a notification
+
+      // Create the selection popup
       const notification = document.createElement('div');
+      const playerOptions = players.map((player, index) =>
+        `<button style="
+          display: block;
+          width: 100%;
+          margin: 0.7em auto;
+          padding: 0.8em 1.6em;
+          background: rgba(45, 212, 191, 0.15);
+          border: 1px solid rgba(45, 212, 191, 0.4);
+          border-radius: 0.7em;
+          color: #a5f3fc;
+          font-size: 1.1em;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.3s ease;
+        " 
+        onmouseover="this.style.background='rgba(45, 212, 191, 0.3)'; this.style.transform='scale(1.03)';"
+        onmouseout="this.style.background='rgba(45, 212, 191, 0.15)'; this.style.transform='scale(1)';"
+        onclick="creditSpinToWin(${index}, ${prize})">
+          <i class="fas fa-user" style="margin-right: 8px;"></i> ${player.name}
+        </button>`
+      ).join('');
+
       notification.innerHTML = `
         <div style="
           position: fixed;
@@ -607,7 +613,66 @@
           left: 50%;
           transform: translate(-50%, -50%);
           background: rgba(15, 23, 42, 0.95);
-          padding: 2em;
+          padding: 2.2em;
+          border-radius: 1.5em;
+          border: 2px solid #4ade80;
+          box-shadow: 0 0 40px rgba(74, 222, 128, 0.6);
+          text-align: center;
+          z-index: 100;
+          max-width: 90%;
+          width: 380px;
+          animation: popIn 0.6s ease-out;
+        ">
+          <h2 style="color: #4ade80; margin-bottom: 1.2em; font-size: 1.8em;">
+            <i class="fas fa-trophy" style="margin-right: 10px;"></i>SPIN TO WIN!
+          </h2>
+          <div style="background: rgba(30, 41, 59, 0.7); padding: 1em; border-radius: 0.8em; margin-bottom: 1.5em;">
+            <p style="font-size: 1.3em; margin-bottom: 0.5em; color: #fdba74;">Prize: <span style="color: #4ade80; font-weight: bold;">${prizeFormatted}</span></p>
+            <p style="font-size: 1.1em; color: #a5f3fc;">Choose a player to receive it:</p>
+          </div>
+          <div style="max-height: 300px; overflow-y: auto; padding: 0 0.5em;">
+            ${playerOptions}
+          </div>
+          <button style="
+            margin-top: 1.5em;
+            font-size: 1em;
+            padding: 0.7em 1.5em;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #fca5a5;
+            border-radius: 0.7em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+          " 
+          onmouseover="this.style.background='rgba(239, 68, 68, 0.25)';"
+          onmouseout="this.style.background='rgba(239, 68, 68, 0.15)';"
+          onclick="this.parentElement.remove()">
+            <i class="fas fa-times" style="margin-right: 8px;"></i> Cancel
+          </button>
+        </div>
+      `;
+
+      document.body.appendChild(notification);
+    }
+
+    // Function to credit the prize to selected player
+    function creditSpinToWin(index, prize) {
+      players[index].balance += prize;
+
+      // Show winner notification
+      const prizeFormatted = format(prize);
+      const winnerName = players[index].name;
+      
+      // Create winner notification
+      const winnerNotification = document.createElement('div');
+      winnerNotification.innerHTML = `
+        <div style="
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: rgba(15, 23, 42, 0.95);
+          padding: 2.2em;
           border-radius: 1.5em;
           border: 2px solid #4ade80;
           box-shadow: 0 0 40px rgba(74, 222, 128, 0.6);
@@ -618,14 +683,14 @@
           animation: popIn 0.6s ease-out;
         ">
           <h2 style="color: #4ade80; margin-bottom: 1.2em; font-size: 1.8em;">
-            <i class="fas fa-trophy" style="margin-right: 10px;"></i>SPIN TO WIN!
+            <i class="fas fa-trophy" style="margin-right: 10px;"></i>CONGRATULATIONS!
           </h2>
-          <p style="font-size: 1.5em; margin-bottom: 1.5em; line-height: 1.5;">
+          <p style="font-size: 1.3em; margin-bottom: 1.5em; line-height: 1.5;">
             <span style="color: #fdba74; font-weight: bold;">${winnerName}</span> wins 
             <span style="color: #4ade80; font-weight: bold;">${prizeFormatted}</span>!
           </p>
           <button style="
-            background: rgba(34, 197, 94, 0.3);
+            background: rgba(34, 197, 94, 0.25);
             color: #86efac;
             border: 1px solid rgba(34, 197, 94, 0.5);
             padding: 0.8em 1.8em;
@@ -634,16 +699,25 @@
             cursor: pointer;
             margin-top: 1em;
             transition: all 0.3s;
-          " onmouseover="this.style.background='rgba(34, 197, 94, 0.5)';" 
-          onmouseout="this.style.background='rgba(34, 197, 94, 0.3)';"
+          " 
+          onmouseover="this.style.background='rgba(34, 197, 94, 0.35)';" 
+          onmouseout="this.style.background='rgba(34, 197, 94, 0.25)';"
           onclick="this.parentElement.parentElement.remove()">
             Continue
           </button>
         </div>
       `;
       
-      document.body.appendChild(notification);
+      document.body.appendChild(winnerNotification);
       updatePlayers();
+
+      // Close all popups
+      const popups = document.querySelectorAll('div[style*="position: fixed"]');
+      popups.forEach(p => {
+        if (p !== winnerNotification.firstChild) {
+          p.remove();
+        }
+      });
     }
 
     // Initialize the UI
