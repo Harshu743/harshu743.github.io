@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LIFE Bank Machine - Aurora Theme</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #0c0f1f, #0a1929, #0d1b2a);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2em 1em;
+      position: relative;
+      overflow-x: hidden;
+      color: #e0f7fa;
+    }
+    
+    /* Enhanced Aurora Background */
+    .aurora {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+    
+    .aurora-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(
+        circle at 10% 20%,
+        rgba(0, 150, 136, 0.1) 0%,
+        transparent 40%
+      ),
+      radial-gradient(
+        circle at 90% 10%,
+        rgba(0, 191, 165, 0.1) 0%,
+        transparent 40%
+      ),
+      radial-gradient(
+        circle at 30% 90%,
+        rgba(0, 200, 180, 0.1) 0%,
+        transparent 40%
+      ),
+      radial-gradient(
+        circle at 70% 80%,
+        rgba(0, 230, 210, 0.1) 0%,
+        transparent 40%
+      );
+      animation: aurora-move 45s infinite linear;
+    }
+    
+    @keyframes aurora-move {
+      0% {
+        transform: rotate(0deg) scale(1);
+      }
+      25% {
+        transform: rotate(1deg) scale(1.02);
+      }
+      50% {
+        transform: rotate(0deg) scale(1.05);
+      }
+      75% {
+        transform: rotate(-1deg) scale(1.02);
+      }
+      100% {
+        transform: rotate(0deg) scale(1);
+      }
+    }
+    
+    .title-container {
+      text-align: center;
+      margin-bottom: 1.5em;
+      z-index: 2;
+      padding: 0 1em;
+      animation: fadeIn 1s ease-out;
+    }
+    
+    h1 {
+      font-size: 2.8rem;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(to right, #4ade80, #2dd4bf, #0ea5e9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 15px rgba(74, 222, 128, 0.3);
+      letter-spacing: 1px;
+      font-weight: 800;
+    }
+    
+    .subtitle {
+      font-size: 1.1rem;
+      opacity: 0.8;
+      max-width: 500px;
+      margin: 0 auto;
+      color: #a5f3fc;
+    }
+    
+    .machine {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(12px);
+      border-radius: 1.5em;
+      padding: 1.8em;
+      max-width: 380px;
+      width: 100%;
+      box-shadow: 
+        0 12px 35px rgba(0, 0, 0, 0.4),
+        0 0 0 2px rgba(45, 212, 191, 0.25),
+        0 0 25px rgba(45, 212, 191, 0.15);
+      border: 1px solid rgba(74, 222, 128, 0.15);
+      position: relative;
+      overflow: hidden;
+      z-index: 2;
+      animation: slideUp 0.8s ease-out;
+    }
+    
+    .machine::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(
+        transparent,
+        rgba(45, 212, 191, 0.25),
+        transparent 30%
+      );
+      animation: rotate 18s linear infinite;
+      z-index: -1;
+    }
+    
+    @keyframes rotate {
+      100% {
+        transform: rotate(1turn);
+      }
+    }
+    
+    .display {
+      background: rgba(10, 15, 25, 0.95);
+      color: #4ade80;
+      font-size: 1.8em;
+      font-family: 'Courier New', monospace;
+      text-align: right;
+      padding: 0.7em;
+      border-radius: 0.7em;
+      margin-bottom: 1.2em;
+      height: 2.4em;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      box-shadow: 
+        inset 0 0 15px rgba(0, 0, 0, 0.6),
+        0 0 10px rgba(74, 222, 128, 0.3);
+      border: 1px solid rgba(45, 212, 191, 0.3);
+      text-shadow: 0 0 8px rgba(74, 222, 128, 0.7);
+      letter-spacing: 2px;
+      overflow: hidden;
+    }
+    
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.7em;
+      margin-bottom: 0.7em;
+    }
+    
+    button {
+      font-size: 1.2em;
+      padding: 0.9em;
+      border: none;
+      border-radius: 0.7em;
+      background: rgba(30, 41, 59, 0.85);
+      color: #e0f2fe;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.25);
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(rgba(255, 255, 255, 0.1), transparent);
+      z-index: -1;
+    }
+    
+    button:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.35);
+      background: rgba(51, 65, 85, 0.9);
+    }
+    
+    button:active {
+      transform: translateY(2px);
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+    }
+    
+    button.action {
+      background: rgba(234, 179, 8, 0.25);
+      color: #fde047;
+      border: 1px solid rgba(234, 179, 8, 0.4);
+    }
+    
+    button.action:hover {
+      background: rgba(234, 179, 8, 0.35);
+    }
+    
+    button.pay {
+      background: rgba(34, 197, 94, 0.25);
+      color: #86efac;
+      border: 1px solid rgba(34, 197, 94, 0.4);
+    }
+    
+    button.pay:hover {
+      background: rgba(34, 197, 94, 0.35);
+    }
+    
+    button.out {
+      background: rgba(239, 68, 68, 0.25);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+    }
+    
+    button.out:hover {
+      background: rgba(239, 68, 68, 0.35);
+    }
+    
+    button.spin {
+      background: linear-gradient(45deg, rgba(249, 115, 22, 0.25), rgba(234, 179, 8, 0.25));
+      color: #fdba74;
+      border: 1px solid rgba(249, 115, 22, 0.4);
+      animation: pulse 3s infinite;
+    }
+    
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.4);
+      }
+      50% {
+        box-shadow: 0 0 0 12px rgba(249, 115, 22, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(249, 115, 22, 0);
+      }
+    }
+    
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.7em;
+      margin-top: 1em;
+    }
+    
+    .player-selector {
+      margin-top: 1.5em;
+      background: rgba(15, 23, 42, 0.65);
+      padding: 1em;
+      border-radius: 0.9em;
+      border: 1px solid rgba(45, 212, 191, 0.25);
+      position: relative;
+    }
+    
+    .player-selector label {
+      display: block;
+      margin-bottom: 0.7em;
+      font-weight: 500;
+      color: #a5f3fc;
+      font-size: 1.1em;
+    }
+    
+    .player-selector select {
+      width: 100%;
+      padding: 0.8em;
+      border-radius: 0.7em;
+      background: rgba(30, 41, 59, 0.85);
+      color: #e0f2fe;
+      border: 1px solid rgba(45, 212, 191, 0.35);
+      font-size: 1em;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232dd4bf' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 1em;
+    }
+    
+    .player-selector select:focus {
+      outline: none;
+      border-color: #2dd4bf;
+      box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.3);
+    }
+    
+    .players {
+      margin-top: 2em;
+      width: 100%;
+      max-width: 380px;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(12px);
+      border-radius: 1.5em;
+      padding: 1.8em;
+      box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.35),
+        0 0 0 2px rgba(45, 212, 191, 0.2);
+      border: 1px solid rgba(74, 222, 128, 0.1);
+      z-index: 2;
+      animation: fadeIn 1.2s ease-out;
+    }
+    
+    .players h2 {
+      text-align: center;
+      margin-bottom: 1.2em;
+      color: #a5f3fc;
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .player {
+      background: rgba(30, 41, 59, 0.65);
+      padding: 1em;
+      margin: 0.8em 0;
+      border-radius: 0.9em;
+      display: flex;
+      justify-content: space-between;
+      border: 1px solid rgba(45, 212, 191, 0.2);
+      transition: all 0.4s ease;
+    }
+    
+    .player:hover {
+      transform: translateX(8px);
+      background: rgba(51, 65, 85, 0.7);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .player-name {
+      font-weight: 600;
+      color: #e0f2fe;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .player-balance {
+      color: #4ade80;
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+    
+    .player-salary {
+      color: #fde047;
+      font-weight: 500;
+    }
+    
+    .current-player {
+      background: rgba(45, 212, 191, 0.15);
+      border: 1px solid rgba(74, 222, 128, 0.4);
+      box-shadow: 0 0 15px rgba(74, 222, 128, 0.2);
+    }
+    
+    .footer {
+      margin-top: 2.5em;
+      text-align: center;
+      font-size: 0.9rem;
+      opacity: 0.7;
+      color: #94a3b8;
+      animation: fadeIn 2s ease-out;
+    }
+    
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes slideUp {
+      from { 
+        opacity: 0; 
+        transform: translateY(30px);
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0);
+      }
+    }
+    
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 2.2rem;
+      }
+      
+      .machine {
+        padding: 1.5em;
+      }
+      
+      button {
+        padding: 0.8em;
+        font-size: 1.1em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="aurora">
+    <div class="aurora-bg"></div>
+  </div>
+  
+  <div class="title-container">
+    <h1><i class="fas fa-piggy-bank"></i> LIFE BANK MACHINE</h1>
+    <p class="subtitle">Aurora-themed financial management for your game</p>
+  </div>
+  
+  <div class="machine">
+    <div class="display" id="display">0</div>
+    <div class="keypad">
+      <button onclick="num(1)">1</button>
+      <button onclick="num(2)">2</button>
+      <button onclick="num(3)">3</button>
+      <button onclick="num(4)">4</button>
+      <button onclick="num(5)">5</button>
+      <button onclick="num(6)">6</button>
+      <button onclick="num(7)">7</button>
+      <button onclick="num(8)">8</button>
+      <button onclick="num(9)">9</button>
+      <button onclick="k()">K</button>
+      <button onclick="num(0)">0</button>
+      <button onclick="m()">M</button>
+    </div>
+    
+    <div class="controls">
+      <button class="pay" onclick="payIn()"><i class="fas fa-arrow-down"></i> PAY IN</button>
+      <button class="out" onclick="payOut()"><i class="fas fa-arrow-up"></i> PAY OUT</button>
+      <button class="action" onclick="setSalary()"><i class="fas fa-coins"></i> Set Salary</button>
+      <button class="pay" onclick="payday()"><i class="fas fa-calendar-day"></i> PAYDAY</button>
+      <button class="spin" onclick="spinToWin()"><i class="fas fa-dice"></i> SPIN</button>
+      <button onclick="clearDisplay()"><i class="fas fa-eraser"></i> C</button>
+    </div>
+    
+    <div class="player-selector">
+      <label><i class="fas fa-user"></i> Select Player:</label>
+      <select id="playerSelect"></select>
+    </div>
+  </div>
+
+  <div class="players" id="players">
+    <h2><i class="fas fa-users"></i> Players Status</h2>
+    <!-- Player list will be populated here -->
+  </div>
+  
+  <div class="footer">
+    LIFE Bank Machine • Enhanced Aurora Theme • All Functionality Preserved
+  </div>
+
+  <script>
+    const players = [
+      { name: "Player 1", balance: 400000, salary: 0 },
+      { name: "Player 2", balance: 400000, salary: 0 },
+      { name: "Player 3", balance: 400000, salary: 0 },
+      { name: "Player 4", balance: 400000, salary: 0 }
+    ];
+    
+    const display = document.getElementById("display");
+    const playerSelect = document.getElementById("playerSelect");
+    const playersDiv = document.getElementById("players");
+    
+    let currentInput = "";
+    let currentPlayerIndex = 0;
+
+    // Initialize player dropdown
+    players.forEach((p, i) => {
+      playerSelect.innerHTML += `<option value="${i}">${p.name}</option>`;
+    });
+
+    function updatePlayers() {
+      playersDiv.innerHTML = `<h2><i class="fas fa-users"></i> Players Status</h2>`;
+      players.forEach((p, i) => {
+        const playerClass = i === currentPlayerIndex ? "player current-player" : "player";
+        playersDiv.innerHTML += `
+          <div class="${playerClass}">
+            <div class="player-name">
+              <i class="fas fa-user"></i> ${p.name}
+            </div>
+            <div>
+              <span class="player-balance">${format(p.balance)}</span>
+              <div class="player-salary">Salary: ${format(p.salary)}</div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function format(n) {
+      if (n >= 1_000_000) return (n/1_000_000).toFixed(1) + "M";
+      if (n >= 1_000) return (n/1_000).toFixed(1) + "K";
+      return n.toString();
+    }
+
+    function num(n) {
+      currentInput += n;
+      display.innerText = currentInput;
+    }
+
+    function k() {
+      if(currentInput) {
+        currentInput = (parseInt(currentInput)*1000).toString();
+        display.innerText = currentInput;
+      }
+    }
+
+    function m() {
+      if(currentInput) {
+        currentInput = (parseInt(currentInput)*1000000).toString();
+        display.innerText = currentInput;
+      }
+    }
+
+    function clearDisplay() {
+      currentInput = "";
+      display.innerText = "0";
+    }
+
+    function getPlayer() {
+      currentPlayerIndex = parseInt(playerSelect.value);
+      return players[currentPlayerIndex];
+    }
+
+    function getAmount() {
+      return parseInt(currentInput) || 0;
+    }
+
+    function payIn() {
+      let p = getPlayer();
+      p.balance += getAmount();
+      clearDisplay();
+      updatePlayers();
+    }
+
+    function payOut() {
+      let p = getPlayer();
+      p.balance -= getAmount();
+      clearDisplay();
+      updatePlayers();
+    }
+
+    function setSalary() {
+      let p = getPlayer();
+      p.salary = getAmount();
+      clearDisplay();
+      updatePlayers();
+    }
+
+    function payday() {
+      let p = getPlayer();
+      if (p.balance < 0) {
+        p.balance -= Math.floor(Math.abs(p.balance)*0.1);
+      }
+      p.balance += p.salary;
+      updatePlayers();
+    }
+
+    // Updated spinToWin function as requested
+    function spinToWin() {
+      const prizeOptions = [100000, 200000, 500000];
+      const prize = prizeOptions[Math.floor(Math.random() * prizeOptions.length)];
+      const winnerIndex = Math.floor(Math.random() * players.length);
+      
+      players[winnerIndex].balance += prize;
+      
+      // Create a visual effect for the winner
+      const winnerName = players[winnerIndex].name;
+      const prizeFormatted = format(prize);
+      
+      // Create a notification
+      const notification = document.createElement('div');
+      notification.innerHTML = `
+        <div style="
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: rgba(15, 23, 42, 0.95);
+          padding: 2em;
+          border-radius: 1.5em;
+          border: 2px solid #4ade80;
+          box-shadow: 0 0 40px rgba(74, 222, 128, 0.6);
+          text-align: center;
+          z-index: 100;
+          max-width: 90%;
+          width: 350px;
+          animation: popIn 0.6s ease-out;
+        ">
+          <h2 style="color: #4ade80; margin-bottom: 1.2em; font-size: 1.8em;">
+            <i class="fas fa-trophy" style="margin-right: 10px;"></i>SPIN TO WIN!
+          </h2>
+          <p style="font-size: 1.5em; margin-bottom: 1.5em; line-height: 1.5;">
+            <span style="color: #fdba74; font-weight: bold;">${winnerName}</span> wins 
+            <span style="color: #4ade80; font-weight: bold;">${prizeFormatted}</span>!
+          </p>
+          <button style="
+            background: rgba(34, 197, 94, 0.3);
+            color: #86efac;
+            border: 1px solid rgba(34, 197, 94, 0.5);
+            padding: 0.8em 1.8em;
+            border-radius: 0.7em;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin-top: 1em;
+            transition: all 0.3s;
+          " onmouseover="this.style.background='rgba(34, 197, 94, 0.5)';" 
+          onmouseout="this.style.background='rgba(34, 197, 94, 0.3)';"
+          onclick="this.parentElement.parentElement.remove()">
+            Continue
+          </button>
+        </div>
+      `;
+      
+      document.body.appendChild(notification);
+      updatePlayers();
+    }
+
+    // Initialize the UI
+    updatePlayers();
+
+    // Update when player selection changes
+    playerSelect.addEventListener("change", () => {
+      currentPlayerIndex = parseInt(playerSelect.value);
+      clearDisplay();
+      updatePlayers();
+    });
+    
+    // Add animation style for pop-in effect
+    const style = document.createElement('style');
+    style.innerHTML = `
+      @keyframes popIn {
+        0% { 
+          opacity: 0; 
+          transform: translate(-50%, -50%) scale(0.5); 
+        }
+        70% { 
+          opacity: 1; 
+          transform: translate(-50%, -50%) scale(1.05); 
+        }
+        100% { 
+          transform: translate(-50%, -50%) scale(1); 
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+</body>
+</html>
